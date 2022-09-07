@@ -37,6 +37,7 @@ type Flags struct {
 	Config         string `docopt:"--config"`
 	Ci             bool   `docopt:"--ci"`
 	Space          string `docopt:"--space"`
+	RelativeAttachments bool   `docopt:"--relative-attachments"`
 }
 
 const (
@@ -71,6 +72,7 @@ Options:
   --drop-h1            Don't include H1 headings in Confluence output.
   --title-from-h1      Extract page title from a leading H1 heading. If no H1 heading
                         on a page then title must be set in a page metadata.
+  --relative-attachments      Automatically add attachments for relative-path files.
   --dry-run            Resolve page and ancestry, show resulting HTML and exit.
   --compile-only       Show resulting HTML and don't update Confluence page content.
   --minor-edit         Don't send notifications while updating Confluence page.
@@ -222,6 +224,10 @@ func processFile(
 			`page title is not set ('Title' header is not set ` +
 				`and '--title-from-h1' option and 'h1_title' config is not set or there is no H1 in the file)`,
 		)
+	}
+
+	if flags.RelativeAttachments {
+		meta.Attachments = append(meta.Attachments, mark.ExtractDocumentRelativeFiles(markdown)...)
 	}
 
 	stdlib, err := stdlib.New(api)

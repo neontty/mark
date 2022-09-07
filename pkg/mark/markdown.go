@@ -159,3 +159,15 @@ func ExtractDocumentLeadingH1(markdown []byte) string {
 		return string(groups[1])
 	}
 }
+
+func ExtractDocumentRelativeFiles(markdown []byte) []string {
+	img := regexp.MustCompile(`!\[[^\]]*\]\((\./[^\)]+)\)`)
+	groups := img.FindAllSubmatch(markdown, len(markdown))
+
+	files := make([]string, len(groups))
+	for f, group := range groups {
+		files[f] = string(group[1])
+	}
+
+	return files
+}
