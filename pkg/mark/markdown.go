@@ -164,10 +164,15 @@ func ExtractDocumentRelativeFiles(markdown []byte) []string {
 	img := regexp.MustCompile(`!\[[^\]]*\]\((\./[^\)]+)\)`)
 	groups := img.FindAllSubmatch(markdown, len(markdown))
 
-	files := make([]string, len(groups))
-	for f, group := range groups {
-		files[f] = string(group[1])
+	files := make(map[string]int, len(groups))
+	for _,group := range groups {
+		files[string(group[1])] = 0
 	}
 
-	return files
+	fileList := make([]string, 0, len(files))
+	for k := range files {
+ 	       fileList = append(fileList, k)
+	}
+
+	return fileList
 }
